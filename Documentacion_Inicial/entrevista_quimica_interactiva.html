@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIRES — Formulario Interactivo Entrevista Química (Fase 0)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; padding: 0 !important; }
+      .tab-content { display: block !important; page-break-after: always; }
+      .card-box { border: 1px solid #ccc !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen p-4 md:p-8">
+
+  <!-- Header principal -->
+  <header class="max-w-6xl mx-auto mb-6 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            Fase 0: Maqueta Visual
+          </span>
+          <span class="text-xs text-[var(--muted-foreground)] flex items-center gap-1">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Autoguardado activo
+          </span>
+        </div>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight text-[var(--foreground)]">
+          Entrevista de Descubrimiento — Química Farmacéutica
+        </h1>
+        <p class="text-sm text-[var(--muted-foreground)]">
+          Herramienta de captura en tiempo real para el Product Manager. Diseñada para agilidad, claridad mutua y cero fricción.
+        </p>
+      </div>
+
+      <!-- Barra de herramientas: Cronómetro y acciones -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Cronómetro de sesión -->
+        <div class="flex items-center gap-2 bg-[var(--secondary)] px-3 py-1.5 rounded-xl border border-[var(--border)]">
+          <svg class="w-4 h-4 text-[var(--muted-foreground)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="timerDisplay" class="font-mono text-sm font-bold text-[var(--foreground)]">00:00</span>
+          <div class="flex gap-1 ml-1">
+            <button onclick="toggleTimer()" id="timerBtn" title="Iniciar/Pausar cronómetro" class="px-2 py-0.5 text-xs font-medium rounded bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 transition">
+              Iniciar
+            </button>
+            <button onclick="resetTimer()" title="Reiniciar" class="px-1.5 py-0.5 text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+              ↺
+            </button>
+          </div>
+        </div>
+
+        <!-- Botones de salida -->
+        <button onclick="copyMarkdownMinuta()" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 shadow-sm transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          Copiar Minuta .md
+        </button>
+        <button onclick="downloadMarkdown()" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-[var(--secondary)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--accent)] flex items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Descargar .md
+        </button>
+        <button onclick="window.print()" class="no-print px-3 py-1.5 text-xs font-semibold rounded-xl bg-[var(--secondary)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--accent)] flex items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H9v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"/></svg>
+          Imprimir
+        </button>
+      </div>
+    </div>
+
+    <!-- Ficha rápida de metadata -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-[var(--border)] text-xs">
+      <div>
+        <label class="block text-[var(--muted-foreground)] mb-1">Fecha de la sesión</label>
+        <input type="date" id="metaFecha" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+      </div>
+      <div>
+        <label class="block text-[var(--muted-foreground)] mb-1">Nombre de la Química</label>
+        <input type="text" id="metaQuimica" placeholder="Q.F.B. Nombre..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+      </div>
+      <div>
+        <label class="block text-[var(--muted-foreground)] mb-1">Entrevistador (PM)</label>
+        <input type="text" id="metaPM" placeholder="Tu nombre..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+      </div>
+      <div>
+        <label class="block text-[var(--muted-foreground)] mb-1">Consentimiento de notas</label>
+        <select id="metaConsent" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          <option value="Aceptado grabación y notas">Aceptado grabación + notas</option>
+          <option value="Solo notas escritas">Solo notas escritas</option>
+          <option value="Confidencial estricto">Confidencial estricto</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tarjetas de auxilio rápido fijas/desplegables (Cheat Sheet) -->
+  <div class="max-w-6xl mx-auto mb-6 no-print">
+    <details class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-[var(--foreground)] transition">
+      <summary class="font-semibold text-amber-700 dark:text-amber-400 cursor-pointer flex items-center justify-between">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          🚨 Tarjetas de auxilio rápido para el PM (Qué decir si la química se desvía)
+        </span>
+        <span class="text-[11px] underline">Haz clic para desplegar/ocultar</span>
+      </summary>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 pt-2 border-t border-amber-500/20 text-xs">
+        <div class="bg-[var(--card)] p-2.5 rounded-lg border border-[var(--border)]">
+          <strong class="text-amber-600 dark:text-amber-400 block mb-1">Si pide Expediente Clínico / CIE-11:</strong>
+          <p class="text-[var(--muted-foreground)]">"Lo anoto porque es valioso. Para este primer sistema nos enfocamos 100% en la receta para no retrasar el dolor urgente de duplicidad y mostrador."</p>
+        </div>
+        <div class="bg-[var(--card)] p-2.5 rounded-lg border border-[var(--border)]">
+          <strong class="text-amber-600 dark:text-amber-400 block mb-1">Si pide validar COFEPRIS/SAT en línea:</strong>
+          <p class="text-[var(--muted-foreground)]">"Hoy iniciamos con declaración y evidencia digital. Cuando existan convenios oficiales, el sistema ya está preparado para conectarse sin rehacerse."</p>
+        </div>
+        <div class="bg-[var(--card)] p-2.5 rounded-lg border border-[var(--border)]">
+          <strong class="text-amber-600 dark:text-amber-400 block mb-1">Si sugiere saltarse la e.firma médica:</strong>
+          <p class="text-[var(--muted-foreground)]">"La e.firma es lo que da validez legal e inviolable. Diseñaremos un flujo asistido muy fácil para que el médico no sienta un muro técnico."</p>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Navegador de Bloques (Tabs) -->
+  <div class="max-w-6xl mx-auto mb-6 no-print overflow-x-auto pb-2">
+    <nav class="flex gap-1.5 min-w-max bg-[var(--card)] p-1.5 border border-[var(--border)] rounded-2xl">
+      <button onclick="switchTab(0)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition active-tab" data-tab="0">
+        0. Encuadre (5m)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="1">
+        1. Contexto (8m)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="2">
+        2. Médico (12m)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="3">
+        3. Farmacia (12m)
+      </button>
+      <button onclick="switchTab(4)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="4">
+        4. Fracciones I–VI (15m)
+      </button>
+      <button onclick="switchTab(5)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="5">
+        5. Paciente & QR (6m)
+      </button>
+      <button onclick="switchTab(6)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="6">
+        6. Auditoría & Libros (8m)
+      </button>
+      <button onclick="switchTab(7)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="7">
+        7. Expectativas & Red (7m)
+      </button>
+      <button onclick="switchTab(8)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-medium transition text-[var(--muted-foreground)] hover:text-[var(--foreground)]" data-tab="8">
+        8. Cierre & Hipótesis (5m)
+      </button>
+      <button onclick="switchTab(9)" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600/20" data-tab="9">
+        📄 Vista Previa Minuta
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenedor Principal de Contenido de los Bloques -->
+  <main class="max-w-6xl mx-auto">
+
+    <!-- BLOQUE 0: ENCUADRE -->
+    <section id="tab-0" class="tab-content block space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 0 — Apertura y Encuadre de la Sesión</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 5 minutos | Objetivo: Generar confianza y delimitar el alcance sin fricción</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-blue-500/10 text-blue-600 rounded-full font-medium">Guion verbal</span>
+        </div>
+
+        <div class="bg-[var(--secondary)] p-4 rounded-xl border border-[var(--border)] space-y-2">
+          <p class="text-xs font-semibold text-[var(--foreground)]">🗣️ Qué leer a la química al abrir:</p>
+          <blockquote class="text-xs italic text-[var(--muted-foreground)] border-l-2 border-blue-500 pl-3 leading-relaxed">
+            "Gracias por tu tiempo. Esta reunión es para entender cómo funciona hoy la receta en la práctica, desde que el médico la escribe hasta que la farmacia la surte y queda el registro. No vamos a mostrarte un sistema todavía. En la siguiente sesión sí: pantallas que tú puedas tocar y criticar. Hoy venimos a aprender de ti."
+          </blockquote>
+          <blockquote class="text-xs italic text-[var(--muted-foreground)] border-l-2 border-emerald-500 pl-3 leading-relaxed">
+            "SIRES cubre el ciclo de la receta: emitir, firmar, llevar a farmacia, surtir una sola vez lo que corresponde y dejar rastro auditable. No es expediente clínico. Hoy no hay convenio con gobierno: el médico declara y anexa evidencia. ¿Te parece bien que empecemos?"
+          </blockquote>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-medium text-[var(--foreground)]">Notas o reacciones iniciales de la química:</label>
+          <div class="flex gap-2 mb-1">
+            <button onclick="insertTag('notasBloque0', '[DOLOR]')" class="text-[11px] px-2 py-0.5 rounded bg-red-500/10 text-red-600 font-medium">+ [DOLOR]</button>
+            <button onclick="insertTag('notasBloque0', '[FLUJO]')" class="text-[11px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 font-medium">+ [FLUJO]</button>
+            <button onclick="insertTag('notasBloque0', '[RIESGO]')" class="text-[11px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 font-medium">+ [RIESGO]</button>
+          </div>
+          <textarea id="notasBloque0" rows="3" placeholder="Reacción al encuadre, comentarios sobre el alcance..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl p-3 text-xs text-[var(--foreground)] focus:ring-1 focus:ring-blue-500"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 1: CONTEXTO -->
+    <section id="tab-1" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 1 — Contexto de la Química</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 8 minutos | Objetivo: Entender desde dónde habla y su visión del problema</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-purple-500/10 text-purple-600 rounded-full font-medium">Preguntas 1 a 5</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">1. Rol y entorno de trabajo principal</label>
+            <input type="text" id="p1_rol" placeholder="Ej. Responsable Sanitaria en farmacia independiente / docente..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">2. % de tiempo semanal dedicado a recetas/libros</label>
+            <select id="p2_tiempo" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+              <option value="Menos del 20% del tiempo">&lt; 20% de su semana</option>
+              <option value="20% a 50% del tiempo">20% a 50% de su semana</option>
+              <option value="Más del 50% de su tiempo (prioritario)">Más del 50% de su semana</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">3. El problema central que busca resolver SIRES en UNA frase (Copia textual):</label>
+          <input type="text" id="p3_fraseDolor" placeholder="&quot;Evitar que clonen recetas y tener libros de control al día...&quot;" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs text-[var(--foreground)] italic">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">4. ¿Quién se beneficia primero?</label>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <label class="flex items-center gap-1.5 bg-[var(--secondary)] px-2.5 py-1 rounded-lg border border-[var(--border)] cursor-pointer">
+                <input type="radio" name="p4_beneficio" value="La Farmacia"> Farmacia
+              </label>
+              <label class="flex items-center gap-1.5 bg-[var(--secondary)] px-2.5 py-1 rounded-lg border border-[var(--border)] cursor-pointer">
+                <input type="radio" name="p4_beneficio" value="El Médico"> Médico
+              </label>
+              <label class="flex items-center gap-1.5 bg-[var(--secondary)] px-2.5 py-1 rounded-lg border border-[var(--border)] cursor-pointer">
+                <input type="radio" name="p4_beneficio" value="El Paciente"> Paciente
+              </label>
+              <label class="flex items-center gap-1.5 bg-[var(--secondary)] px-2.5 py-1 rounded-lg border border-[var(--border)] cursor-pointer">
+                <input type="radio" name="p4_beneficio" value="El Auditor / Regulación"> Auditor/Regulación
+              </label>
+            </div>
+            <input type="text" id="p4_porque" placeholder="¿Por qué opina eso?..." class="w-full mt-1 bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">5. ¿A quién más hay que convencer?</label>
+            <input type="text" id="p5_convencer" placeholder="Dueños de farmacia, médicos líderes, inspectores..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 2: MÉDICO -->
+    <section id="tab-2" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 2 — Flujo Actual del Médico al Recetar</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 12 minutos | Objetivo: Mapear fricciones, tiempos y uso de e.firma</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-blue-500/10 text-blue-600 rounded-full font-medium">Preguntas 6 a 12</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">6. ¿Cómo receta físicamente el médico hoy? (Caso reciente):</label>
+          <div class="flex flex-wrap gap-2 text-xs mb-1">
+            <label class="flex items-center gap-1 bg-[var(--secondary)] px-2 py-1 rounded border border-[var(--border)]">
+              <input type="checkbox" id="p6_recetarioImpreso"> Recetario impreso formal
+            </label>
+            <label class="flex items-center gap-1 bg-[var(--secondary)] px-2 py-1 rounded border border-[var(--border)]">
+              <input type="checkbox" id="p6_hojaLibre"> Hoja membretada libre
+            </label>
+            <label class="flex items-center gap-1 bg-[var(--secondary)] px-2 py-1 rounded border border-[var(--border)]">
+              <input type="checkbox" id="p6_software"> Software médico particular
+            </label>
+            <label class="flex items-center gap-1 bg-[var(--secondary)] px-2 py-1 rounded border border-[var(--border)]">
+              <input type="checkbox" id="p6_whatsapp"> WhatsApp / Foto digital
+            </label>
+          </div>
+          <textarea id="p6_pasos" rows="2" placeholder="Pasos que sigue el médico: consulta, escribe a mano, firma..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-2.5 text-xs text-[var(--foreground)]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">7. Tiempo en recetar</label>
+            <select id="p7_tiempo" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Menos de 2 min">&lt; 2 minutos (muy rápido)</option>
+              <option value="2 a 5 minutos">2 a 5 minutos</option>
+              <option value="Más de 5 minutos">&gt; 5 minutos</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">9. ¿Qué se lleva el paciente?</label>
+            <select id="p9_seLleva" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Solo original">Original únicamente</option>
+              <option value="Original y copia">Original + Copia</option>
+              <option value="Foto en celular">Foto en su celular</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">11. Adopción de e.firma</label>
+            <select id="p11_efirma" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Casi todos la tienen activa">Casi todos la tienen (SAT)</option>
+              <option value="La tienen pero la maneja el contador">La tienen, pero la usa el contador</option>
+              <option value="Rara o genera resistencia">Rara / Alta resistencia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">8. Requisitos INDISPENSABLES que la farmacia exige (si falta uno, rechazan):</label>
+          <input type="text" id="p8_requisitos" placeholder="Cédula profesional, firma autógrafa, fecha, dosis exacta..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">10. Errores más comunes cometidos por médicos:</label>
+          <input type="text" id="p10_errores" placeholder="Letra ilegible, sin duración del tx, mezcla de fracciones incompatibles..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 3: FARMACIA -->
+    <section id="tab-3" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 3 — Flujo Actual en Mostrador de Farmacia</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 12 minutos | Objetivo: Entender la fila, rechazos, surtido parcial y retención</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-emerald-500/10 text-emerald-600 rounded-full font-medium">Preguntas 13 a 20</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">13 y 14. Llegada a mostrador y cómo detectan fraude / copias:</label>
+          <textarea id="p13_fraude" rows="2" placeholder="Revisión visual de textura de papel, sellos anteriores, desconfianza..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-2.5 text-xs text-[var(--foreground)]"></textarea>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">15. Top 3 motivos frecuentes de rechazo de recetas en mostrador:</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <input type="text" id="p15_rechazo1" placeholder="1. Receta vencida..." class="bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+            <input type="text" id="p15_rechazo2" placeholder="2. Falta cédula / firma..." class="bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+            <input type="text" id="p15_rechazo3" placeholder="3. Letra ilegible / dosis..." class="bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+        </div>
+
+        <!-- Surtido parcial y retención -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[var(--border)]">
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-[var(--foreground)]">16 y 17. Surtido Parcial (cuando falta producto)</label>
+            <div class="flex gap-2 text-xs">
+              <label class="flex items-center gap-1"><input type="radio" name="p16_frecuencia" value="Muy común (diario)"> Muy diario</label>
+              <label class="flex items-center gap-1"><input type="radio" name="p16_frecuencia" value="Ocasional"> Ocasional</label>
+              <label class="flex items-center gap-1"><input type="radio" name="p16_frecuencia" value="Raro"> Raro</label>
+            </div>
+            <input type="text" id="p17_queQueda" placeholder="¿Qué se queda la farmacia y qué se lleva el paciente? (Sellos al reverso...)" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-[var(--foreground)]">18. Retención física de la receta</label>
+            <input type="text" id="p18_retencion" placeholder="¿En qué fracciones se retiene y en cuál surtido?..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+        </div>
+
+        <!-- Preguntas de arquitectura P-05 y P-07 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[var(--border)]">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">19. Si se va el internet en farmacia (P-07):</label>
+            <select id="p19_offline" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Se detiene el surtido controlado (esperan red)">Se detiene el surtido controlado (correcto para SIRES)</option>
+              <option value="Surten manual en libreta y luego capturan">Surten manual y anotan (riesgo de duplicidad)</option>
+              <option value="No pueden vender nada">El punto de venta se bloquea por completo</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">20. ¿Quién firma la dispensación? (P-05):</label>
+            <select id="p20_quienFirma" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Empleado de mostrador con su login">Empleado de mostrador</option>
+              <option value="Responsable Sanitario (Químico)">Responsable Sanitario</option>
+              <option value="Ambos (mostrador atiende, RS supervisa)">Ambos perfiles</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 4: FRACCIONES I A VI -->
+    <section id="tab-4" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 4 — Las 6 Fracciones en la Práctica</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 15 minutos | Registrar la práctica operativa real (no dictamen de ley)</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-amber-500/10 text-amber-600 rounded-full font-medium">Art. 226 LGS</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)]">
+                <th class="p-2 font-semibold">Fracción</th>
+                <th class="p-2 font-semibold">Ejemplos cotidianos</th>
+                <th class="p-2 font-semibold">¿Se retiene receta?</th>
+                <th class="p-2 font-semibold">Vigencia / Surtidos</th>
+                <th class="p-2 font-semibold">Topes de cajas</th>
+                <th class="p-2 font-semibold">¿Folio o Especialidad?</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--border)]">
+              <tr>
+                <td class="p-2 font-bold text-red-600 dark:text-red-400">I (Estup.)</td>
+                <td class="p-2"><input type="text" id="f1_ejemplo" placeholder="Morfina, fentanilo..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f1_retiene" value="Sí, retenida siempre" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f1_vigencia" placeholder="30 días / 1 surtido" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f1_topes" placeholder="Tratamiento máx 30d" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f1_requisitos" placeholder="Recetario COFEPRIS con código" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-orange-600 dark:text-orange-400">II (Psicotr.)</td>
+                <td class="p-2"><input type="text" id="f2_ejemplo" placeholder="Clonazepam, alprazolam..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f2_retiene" value="Sí, al 1er surtido" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f2_vigencia" placeholder="30 días / 1 surtido" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f2_topes" placeholder="Máx 2 cajas" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f2_requisitos" placeholder="¿Pide especialidad médica? (P-01)" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-amber-600 dark:text-amber-400">III (Psicotr.)</td>
+                <td class="p-2"><input type="text" id="f3_ejemplo" placeholder="Diazepam, lorazepam..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f3_retiene" value="Al 3er surtido" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f3_vigencia" placeholder="Hasta 6 meses / 3 surtidos" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f3_topes" placeholder="Por cada surtido..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f3_requisitos" placeholder="Sello en reverso en cada entrega" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-blue-600 dark:text-blue-400">IV (Antibiót.)</td>
+                <td class="p-2"><input type="text" id="f4_ejemplo" placeholder="Amoxicilina, cefalosporinas..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f4_retiene" value="Solo al terminar tratamiento" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f4_vigencia" placeholder="Vigencia por días de tx" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f4_topes" placeholder="Cajas según días/frecuencia" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f4_requisitos" placeholder="Cédula médica obligatoria" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-emerald-600 dark:text-emerald-400">V y VI (General)</td>
+                <td class="p-2"><input type="text" id="f5_ejemplo" placeholder="Venta libre, antigripales..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f5_retiene" value="No se retiene" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f5_vigencia" placeholder="Libre" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f5_topes" placeholder="Sin tope estricto" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+                <td class="p-2"><input type="text" id="f5_requisitos" placeholder="Ninguno" class="w-full bg-[var(--background)] border border-[var(--border)] rounded px-1.5 py-1 text-xs"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Alineación clave de estrategia MVP -->
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3.5 space-y-2">
+          <p class="text-xs font-semibold text-[var(--foreground)]">🎯 Pregunta clave de alineación para la Fase 2 (MVP):</p>
+          <p class="text-xs text-[var(--muted-foreground)]">
+            "Si en el primer sistema funcional empezamos por Fracciones IV, V y VI (antibióticos y general) y dejamos I, II y III para la siguiente fase hasta tener criterio formal de COFEPRIS: ¿te parece un camino responsable o crees que 'no sirve'?"
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+            <label class="flex items-center gap-2 bg-[var(--card)] p-2 rounded-lg border border-[var(--border)] cursor-pointer">
+              <input type="radio" name="p21_mvpFracciones" value="Acepta IV, V y VI como inicio responsable">
+              <span>Le parece responsable y adecuado</span>
+            </label>
+            <label class="flex items-center gap-2 bg-[var(--card)] p-2 rounded-lg border border-[var(--border)] cursor-pointer">
+              <input type="radio" name="p21_mvpFracciones" value="Exige controladas desde el día 1">
+              <span>Exige I, II y III desde el inicio (Alerta de riesgo)</span>
+            </label>
+          </div>
+          <input type="text" id="p21_reaccionTexto" placeholder="Frase textual de su reacción..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 5: PACIENTE Y QR -->
+    <section id="tab-5" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 5 — Paciente, Receta y Código QR</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 6 minutos | Confirmar adopción del celular y diseño de 1 QR por receta</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-cyan-500/10 text-cyan-600 rounded-full font-medium">Preguntas 24 a 27</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">24 y 25. ¿Cómo presenta el paciente la receta?</label>
+            <select id="p24_presenta" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Híbrido: jóvenes celular, adultos mayores papel">Híbrido (celular WhatsApp o papel impreso)</option>
+              <option value="Casi 100% exige papel impreso">Casi 100% exige papel impreso</option>
+              <option value="Muy habituados al teléfono">Muy habituados al teléfono / PDF</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-[var(--foreground)]">26. Decisión de Arquitectura: 1 QR por receta</label>
+            <select id="p26_unQR" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Aprobado: 1 solo QR por receta facilita todo">1 QR por receta funciona perfecto en mostrador</option>
+              <option value="Duda: Preferiría 1 QR por medicamento (Escalar a CTO)">Le preocupa el surtido parcial si hay 1 solo QR</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">27. Privacidad: Datos que NUNCA deben mostrarse en un escaneo público:</label>
+          <input type="text" id="p27_privacidad" placeholder="Diagnóstico, CURP o teléfono del paciente, otros medicamentos de la receta..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 6: AUDITORÍA Y LIBROS -->
+    <section id="tab-6" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 6 — Auditoría, Libros de Control e Inspección</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 8 minutos | Entender libros en papel vs digital y experiencia con COFEPRIS</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-indigo-500/10 text-indigo-600 rounded-full font-medium">Preguntas 28 a 32</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="text-xs font-semibold text-[var(--foreground)]">28. ¿Qué es lo primero que revisa un auditor de COFEPRIS al llegar?</label>
+          <input type="text" id="p28_auditor" placeholder="Recetas físicas retenidas, libro foliado, cédula del RS, existencias en vitrina..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">29 y 30. ¿Cómo llevan el Libro de Control hoy y qué falla?</label>
+            <select id="p29_libroTipo" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)] mb-1">
+              <option value="Libro físico de papel foliado">Libro físico en papel foliado</option>
+              <option value="Archivo de Excel interno">Archivo de Excel</option>
+              <option value="Sistema de software de la farmacia">Sistema del punto de venta</option>
+            </select>
+            <input type="text" id="p30_fallasLibro" placeholder="Tachaduras, atrasos en captura, descuadre de inventario..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">31. ¿Qué exportación necesita de un Libro Digital?</label>
+            <div class="flex flex-wrap gap-2 text-xs mb-1">
+              <label class="flex items-center gap-1"><input type="checkbox" id="p31_pdf"> PDF imprimible oficial</label>
+              <label class="flex items-center gap-1"><input type="checkbox" id="p31_excel"> Excel / CSV conciliación</label>
+            </div>
+            <input type="text" id="p32_cofeprisRelacion" placeholder="Relación o contactos previos con COFEPRIS / Regulación estatal..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 7: EXPECTATIVAS -->
+    <section id="tab-7" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 7 — Expectativas, Tiempos y Red de Validación</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 7 minutos | Definir éxito de la maqueta y reclutar médicos/farmacias piloto</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-pink-500/10 text-pink-600 rounded-full font-medium">Preguntas 33 a 37</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">33. Las 3 cosas indispensables para considerar exitosa la maqueta:</label>
+            <input type="text" id="p33_exito1" placeholder="1. ..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)] mb-1">
+            <input type="text" id="p33_exito2" placeholder="2. ..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)] mb-1">
+            <input type="text" id="p33_exito3" placeholder="3. ..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-2.5 py-1 text-xs text-[var(--foreground)]">
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">34. ¿Qué sería un FRACASO rotundo para ella?:</label>
+            <textarea id="p34_fracaso" rows="3" placeholder="&quot;Que las pantallas sean complicadas para el médico&quot;, &quot;que tarde en escanear&quot;..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-2.5 text-xs text-[var(--foreground)] italic"></textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[var(--border)]">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">35. Disponibilidad en las próximas 2 semanas:</label>
+            <select id="p35_disp" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-1.5 text-xs text-[var(--foreground)]">
+              <option value="Alta: 1 o 2 sesiones de 45m para ver maqueta">Alta (1-2 sesiones de 45 min)</option>
+              <option value="Media: solo 1 sesión final">Media (1 sesión final)</option>
+              <option value="Baja: asíncrono por mensaje">Baja (por mensaje)</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--foreground)]">36 y 37. Contactos para validar prototipo (Médicos / Farmacias):</label>
+            <input type="text" id="p36_contactos" placeholder="Nombres de 1-2 médicos o sucursales de farmacia interesadas..." class="w-full bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--foreground)]">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 8: CIERRE E HIPÓTESIS -->
+    <section id="tab-8" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Bloque 8 — Cierre, Compromisos y Validación de Hipótesis</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Duración estimada: 5 minutos | Sintetizar acuerdos y evaluar H1 a H8</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-emerald-500/10 text-emerald-600 rounded-full font-medium">Evaluación PM</span>
+        </div>
+
+        <div class="bg-[var(--secondary)] p-3 rounded-xl border border-[var(--border)] space-y-1 text-xs">
+          <p class="font-semibold text-[var(--foreground)]">🗣️ Resumen verbal para cerrar:</p>
+          <p class="italic text-[var(--muted-foreground)]">
+            "Para asegurarnos de estar alineados: el dolor principal es [X]; el médico hoy hace [Y]; la farmacia se traba en [Z]; y para ti el valor visible inmediato radica en [W]. Te mandamos la minuta en 24 horas y agendamos la sesión para criticar los wireframes."
+          </p>
+        </div>
+
+        <!-- Matriz de Hipótesis H1-H8 -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">Evaluación de Hipótesis del Proyecto:</h3>
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H1: El médico receta bajo presión y requiere flujo ultra rápido</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h1', 'CONFIRMADA')" id="btn-h1-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h1', 'PARCIAL')" id="btn-h1-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h1', 'ROTA')" id="btn-h1-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H2: El fraude más crítico en farmacia es la receta duplicada/fotocopiada</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h2', 'CONFIRMADA')" id="btn-h2-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h2', 'PARCIAL')" id="btn-h2-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h2', 'ROTA')" id="btn-h2-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H3: Un solo QR por receta es suficiente en mostrador (no por renglón)</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h3', 'CONFIRMADA')" id="btn-h3-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h3', 'PARCIAL')" id="btn-h3-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h3', 'ROTA')" id="btn-h3-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H4: El surtido parcial ocurre cotidianamente en la farmacia</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h4', 'CONFIRMADA')" id="btn-h4-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h4', 'PARCIAL')" id="btn-h4-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h4', 'ROTA')" id="btn-h4-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H5: Fracciones IV, V y VI son aceptadas como primer arranque del MVP</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h5', 'CONFIRMADA')" id="btn-h5-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h5', 'PARCIAL')" id="btn-h5-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h5', 'ROTA')" id="btn-h5-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H6: La farmacia no debe surtir medicamentos controlados sin internet</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h6', 'CONFIRMADA')" id="btn-h6-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h6', 'PARCIAL')" id="btn-h6-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h6', 'ROTA')" id="btn-h6-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H7: Cancelar una receta emitida es un caso real necesario</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h7', 'CONFIRMADA')" id="btn-h7-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h7', 'PARCIAL')" id="btn-h7-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h7', 'ROTA')" id="btn-h7-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="font-medium">H8: La química tiene apertura para acercar médicos y farmacias piloto</span>
+              <div class="flex gap-1.5">
+                <button onclick="setHyp('h8', 'CONFIRMADA')" id="btn-h8-CONFIRMADA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Confirmada</button>
+                <button onclick="setHyp('h8', 'PARCIAL')" id="btn-h8-PARCIAL" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Parcial</button>
+                <button onclick="setHyp('h8', 'ROTA')" id="btn-h8-ROTA" class="px-2 py-0.5 rounded border border-[var(--border)] text-[11px]">Rota</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE 9: VISTA PREVIA Y EXPORTACIÓN DE MINUTA -->
+    <section id="tab-9" class="tab-content hidden space-y-4">
+      <div class="card-box bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 class="text-base font-semibold text-[var(--foreground)]">Vista Previa de la Minuta (Formato Sección 10)</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">Se compila automáticamente con todo lo que has capturado en las pestañas anteriores.</p>
+          </div>
+          <button onclick="copyMarkdownMinuta()" class="px-3 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700">
+            Copiar al portapapeles
+          </button>
+        </div>
+
+        <pre id="minutaPreview" class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 text-xs font-mono text-[var(--foreground)] overflow-x-auto whitespace-pre-wrap max-h-[500px] leading-relaxed"></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Variables de estado
+    let currentTab = 0;
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let hypotheses = {
+      h1: '', h2: '', h3: '', h4: '', h5: '', h6: '', h7: '', h8: ''
+    };
+
+    // Navegación entre pestañas
+    function switchTab(index) {
+      document.querySelectorAll('.tab-content').forEach((el, idx) => {
+        el.classList.toggle('hidden', idx !== index);
+        el.classList.toggle('block', idx === index);
+      });
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        btn.classList.toggle('bg-[var(--primary)]', idx === index && index !== 9);
+        btn.classList.toggle('text-[var(--primary-foreground)]', idx === index && index !== 9);
+      });
+      currentTab = index;
+      if (index === 9) {
+        generateMinutaMarkdown();
+      }
+    }
+
+    // Cronómetro
+    function toggleTimer() {
+      const btn = document.getElementById('timerBtn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = 'Reanudar';
+        btn.classList.remove('bg-amber-600');
+        btn.classList.add('bg-[var(--primary)]');
+      } else {
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const secs = String(timerSeconds % 60).padStart(2, '0');
+          document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+        }, 1000);
+        btn.textContent = 'Pausar';
+        btn.classList.add('bg-amber-600');
+        btn.classList.remove('bg-[var(--primary)]');
+      }
+    }
+
+    function resetTimer() {
+      if (confirm('¿Reiniciar cronómetro a 00:00?')) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerSeconds = 0;
+        document.getElementById('timerDisplay').textContent = '00:00';
+        document.getElementById('timerBtn').textContent = 'Iniciar';
+      }
+    }
+
+    // Clasificación de Hipótesis
+    function setHyp(hId, val) {
+      hypotheses[hId] = val;
+      ['CONFIRMADA', 'PARCIAL', 'ROTA'].forEach(type => {
+        const btn = document.getElementById(`btn-${hId}-${type}`);
+        if (!btn) return;
+        if (type === val) {
+          btn.className = `px-2 py-0.5 rounded text-[11px] font-bold ${
+            type === 'CONFIRMADA' ? 'bg-emerald-600 text-white' :
+            type === 'PARCIAL' ? 'bg-amber-500 text-white' : 'bg-red-600 text-white'
+          }`;
+        } else {
+          btn.className = 'px-2 py-0.5 rounded border border-[var(--border)] text-[11px] opacity-70';
+        }
+      });
+      saveAll();
+    }
+
+    // Inserción rápida de tags
+    function insertTag(textareaId, tag) {
+      const el = document.getElementById(textareaId);
+      if (!el) return;
+      el.value = (el.value ? el.value + ' ' : '') + tag + ' ';
+      el.focus();
+      saveAll();
+    }
+
+    // Generador de minuta en Markdown según Sección 10
+    function generateMinutaMarkdown() {
+      const fecha = document.getElementById('metaFecha').value || '2026-10-09';
+      const quimica = document.getElementById('metaQuimica').value || '[Nombre Química]';
+      const pm = document.getElementById('metaPM').value || '[Nombre PM]';
+      const consent = document.getElementById('metaConsent').value;
+      const dolor = document.getElementById('p3_fraseDolor').value || 'Evitar recetas duplicadas y facilitar control';
+      const rol = document.getElementById('p1_rol').value || 'Farmacia';
+      const tiempo = document.getElementById('p2_tiempo').value;
+      const beneficio = document.querySelector('input[name="p4_beneficio"]:checked')?.value || 'Farmacia';
+      const porque = document.getElementById('p4_porque').value || '';
+      const convencer = document.getElementById('p5_convencer').value || '';
+      
+      const pasosMed = document.getElementById('p6_pasos').value || '';
+      const tiempoMed = document.getElementById('p7_tiempo').value;
+      const reqMed = document.getElementById('p8_requisitos').value || '';
+      const erroresMed = document.getElementById('p10_errores').value || '';
+      const efirmaMed = document.getElementById('p11_efirma').value;
+
+      const fraudeFarm = document.getElementById('p13_fraude').value || '';
+      const r1 = document.getElementById('p15_rechazo1').value || 'Vencida';
+      const r2 = document.getElementById('p15_rechazo2').value || 'Sin firma/cédula';
+      const r3 = document.getElementById('p15_rechazo3').value || 'Ilegible';
+      const parcial = document.getElementById('p17_queQueda').value || '';
+      const retencion = document.getElementById('p18_retencion').value || '';
+      const offline = document.getElementById('p19_offline').value;
+      const quienFirma = document.getElementById('p20_quienFirma').value;
+
+      const mvpFracc = document.querySelector('input[name="p21_mvpFracciones"]:checked')?.value || 'Acepta IV, V y VI';
+      const reaccionMvp = document.getElementById('p21_reaccionTexto').value || '';
+
+      const qrUnico = document.getElementById('p26_unQR').value;
+      const privacidad = document.getElementById('p27_privacidad').value || '';
+
+      const auditor = document.getElementById('p28_auditor').value || '';
+      const libroFallas = document.getElementById('p30_fallasLibro').value || '';
+      const cofeprisRel = document.getElementById('p32_cofeprisRelacion').value || '';
+
+      const exito1 = document.getElementById('p33_exito1').value || 'Flujo claro';
+      const exito2 = document.getElementById('p33_exito2').value || 'Validación rápida de QR';
+      const exito3 = document.getElementById('p33_exito3').value || 'Rechazo de duplicados';
+      const fracaso = document.getElementById('p34_fracaso').value || '';
+      const contactos = document.getElementById('p36_contactos').value || '';
+      const notas0 = document.getElementById('notasBloque0').value || '';
+
+      const md = `\`\`\`markdown
+Sesión: Entrevista de descubrimiento Fase 0 — Química farmacéutica
+Fecha: ${fecha}
+Stakeholder: ${quimica}, química farmacéutica — origen del proyecto
+Participantes internos: ${pm} (PM / Facilitador), UX Designer
+Consentimiento: ${consent}
+
+Temas tratados:
+1. Contexto y dolor origen (${rol}, dedica ${tiempo} a recetas)
+2. Flujo actual del médico (${tiempoMed}, e.firma: ${efirmaMed})
+3. Flujo actual de farmacia (rechazos por: ${r1}, ${r2}, ${r3}; offline: ${offline})
+4. Fracciones en la práctica (MVP IV/V/VI: ${mvpFracc})
+5. Paciente / QR (${qrUnico}; Privacidad: ${privacidad})
+6. Auditoría y libros (Fallas en libros: ${libroFallas})
+7. Expectativas y red (Éxito: ${exito1}; Contactos: ${contactos})
+
+Feedback recibido:
+| Tema | Feedback | Impacto | Acción |
+|---|---|---|---|
+| Dolor central | "${dolor}" | Alto | Centrar la maqueta en anti-duplicidad |
+| Beneficio | Percibe que el mayor beneficio es para: ${beneficio} (${porque}) | Medio | Reforzar este portal en demo |
+| Mostrador | ${fraudeFarm} | Alto | Mostrar validación visual inmediata |
+| Surtido parcial | ${parcial} | Alto | Maqueta debe contemplar saldo restante |
+| Fracciones MVP | ${mvpFracc}. Cita: "${reaccionMvp}" | Crítico | Mantener IV/V/VI y maquetar I-III como bloqueos |
+| Éxito vs Fracaso | Evitar fracaso: "${fracaso}" | Alto | Mantener interfaces limpias y asistidas |
+
+Decisiones tomadas:
+- Se ratifica el alcance centrado en la receta (sin expediente clínico ni consultas en línea a gobierno).
+- Se confirma el diseño de un solo QR por receta en el portal de farmacia.
+- El MVP operativo arranca con Fracciones IV, V y VI; I, II y III se visualizan en maqueta pero no operan sin criterio COFEPRIS.
+
+Preguntas abiertas:
+- Confirmar si la farmacia requiere que el Responsable Sanitario firme electrónicamente cada surtido (P-05: ${quienFirma}).
+- Validar formato final de exportación del libro de control para inspección de COFEPRIS.
+
+Compromisos:
+| Compromiso | Responsable | Fecha |
+|---|---|---|
+| Minuta formal enviada a la Química | PM | Próximas 24 horas |
+| Wireframes interactivos de los 3 portales | UX Designer / PM | Semana 1-2 |
+| Sesión de presentación de la maqueta | Equipo SIRES | Semana 2 |
+
+Riesgos detectados:
+- Resistencia médica ante la e.firma: ${efirmaMed}.
+- Gestión de expectativas en tiempos y alcance de fracciones controladas.
+
+Validación de hipótesis:
+| ID | Hipótesis | Resultado | Nota |
+|---|---|---|---|
+| H1 | Médico bajo presión de tiempo | ${hypotheses.h1 || 'PENDIENTE'} | Flujo actual toma: ${tiempoMed} |
+| H2 | Fraude por recetas fotocopiadas | ${hypotheses.h2 || 'PENDIENTE'} | Detección actual: ${fraudeFarm} |
+| H3 | 1 QR por receta suficiente | ${hypotheses.h3 || 'PENDIENTE'} | Decisión: ${qrUnico} |
+| H4 | Surtido parcial cotidiano | ${hypotheses.h4 || 'PENDIENTE'} | Mecánica: ${parcial} |
+| H5 | Fracciones IV, V y VI como MVP | ${hypotheses.h5 || 'PENDIENTE'} | Reacción: ${mvpFracc} |
+| H6 | No surtir controlados offline | ${hypotheses.h6 || 'PENDIENTE'} | Regla: ${offline} |
+| H7 | Cancelación de recetas emitida | ${hypotheses.h7 || 'PENDIENTE'} | Caso de uso válido |
+| H8 | Red de médicos y farmacias | ${hypotheses.h8 || 'PENDIENTE'} | Contactos: ${contactos} |
+
+Próxima sesión: Revisión de maqueta navegable (Figma) — Fecha por agendar
+\`\`\``;
+
+      document.getElementById('minutaPreview').textContent = md;
+      return md;
+    }
+
+    // Copiar al portapapeles
+    function copyMarkdownMinuta() {
+      const md = generateMinutaMarkdown();
+      navigator.clipboard.writeText(md).then(() => {
+        alert('✅ ¡Minuta en formato Markdown copiada al portapapeles con éxito!');
+      }).catch(() => {
+        alert('Por favor selecciona y copia el texto del recuadro de vista previa.');
+      });
+    }
+
+    // Descargar como archivo .md
+    function downloadMarkdown() {
+      const md = generateMinutaMarkdown();
+      const blob = new Blob([md], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Minuta_Entrevista_Quimica_Fase0_${document.getElementById('metaFecha').value || '2026-10-09'}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Persistencia en LocalStorage
+    const STORAGE_KEY = 'SIRES_ENTREVISTA_QUIMICA_DATA_V1';
+
+    function saveAll() {
+      const data = {
+        inputs: {},
+        checkboxes: {},
+        radios: {},
+        selects: {},
+        hypotheses: hypotheses,
+        timerSeconds: timerSeconds
+      };
+
+      document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
+        if (el.id) data.inputs[el.id] = el.value;
+      });
+
+      document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        if (el.id) data.checkboxes[el.id] = el.checked;
+      });
+
+      document.querySelectorAll('select').forEach(el => {
+        if (el.id) data.selects[el.id] = el.value;
+      });
+
+      document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+        data.radios[el.name] = el.value;
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadAll() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        document.getElementById('metaFecha').value = new Date().toISOString().split('T')[0];
+        return;
+      }
+      try {
+        const data = JSON.parse(raw);
+        if (data.inputs) {
+          for (let id in data.inputs) {
+            const el = document.getElementById(id);
+            if (el) el.value = data.inputs[id];
+          }
+        }
+        if (data.checkboxes) {
+          for (let id in data.checkboxes) {
+            const el = document.getElementById(id);
+            if (el) el.checked = data.checkboxes[id];
+          }
+        }
+        if (data.selects) {
+          for (let id in data.selects) {
+            const el = document.getElementById(id);
+            if (el) el.value = data.selects[id];
+          }
+        }
+        if (data.radios) {
+          for (let name in data.radios) {
+            const el = document.querySelector(`input[name="${name}"][value="${data.radios[name]}"]`);
+            if (el) el.checked = true;
+          }
+        }
+        if (data.hypotheses) {
+          hypotheses = data.hypotheses;
+          for (let h in hypotheses) {
+            if (hypotheses[h]) setHyp(h, hypotheses[h]);
+          }
+        }
+        if (data.timerSeconds) {
+          timerSeconds = data.timerSeconds;
+          const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const secs = String(timerSeconds % 60).padStart(2, '0');
+          document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+        }
+      } catch (e) {
+        console.error('Error cargando datos previos:', e);
+      }
+    }
+
+    // Listeners automáticos
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAll();
+      document.body.addEventListener('input', saveAll);
+      document.body.addEventListener('change', saveAll);
+    });
+  </script>
+</body>
+</html>
