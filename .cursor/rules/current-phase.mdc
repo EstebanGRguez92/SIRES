@@ -1,0 +1,93 @@
+---
+description: "Contexto de la fase actual del proyecto SIRES. Todos los agentes deben leerlo antes de responder."
+alwaysApply: true
+---
+
+# FASE ACTUAL: 0 — Maqueta Visual
+
+Duración estimada: 2 semanas.
+Objetivo: validar visualmente el sistema con la química farmacéutica antes de invertir en código o infraestructura.
+
+## Prioridad absoluta de esta fase
+
+Validación con stakeholder sobre perfección técnica.
+Velocidad de iteración sobre solidez de implementación.
+Wireframes y prototipo clickeable sobre código funcional.
+
+## Restricciones activas (reglas duras)
+
+- NO escribir código de producción (ni backend, ni frontend, ni infraestructura).
+- NO provisionar recursos en AWS.
+- NO usar datos reales de pacientes, médicos ni farmacias.
+- NO implementar e.firma real (solo simulada visualmente).
+- NO diseñar esquemas de base de datos definitivos.
+- NO comprometer decisiones arquitectónicas sin validación con la química.
+
+## Alcance de esta fase
+
+- Wireframes de baja fidelidad de los 3 portales: médico, farmacia, admin.
+- Prototipo clickeable en Figma de los flujos principales.
+- Guion de demo para la química farmacéutica.
+- Documento de feedback estructurado post-validación.
+- QR simulado: uno por receta (no por medicamento ni por renglón).
+- Fracciones a maquetar: todas (I a VI). Fracciones IV, V y VI son las candidatas a
+  operación real en el MVP (Fase 2), por tener menos restricciones. Fracciones I, II y III
+  se maquetan para validar el flujo y los bloqueos visuales, pero no se construyen en Fase 1 (POC).
+
+## Fuera de alcance de esta fase
+
+- Backend, frontend, base de datos, AWS, e.firma real, QR real, bitácora, Redlock.
+- Cualquier decisión técnica que no esté ya cerrada en la arquitectura.
+
+## Entregables de la fase
+
+1. Link Figma navegable con los 3 portales.
+2. Video demo de 3 minutos.
+3. Documento de flujos por portal.
+4. Registro de feedback de la química farmacéutica.
+5. Decisión go/no-go para avanzar a Fase 1 (POC).
+
+## Agentes activos en esta fase
+
+| Agente | Rol en Fase 0 |
+|---|---|
+| CTO | Prioriza UX, frena sobre-ingeniería, valida alcance |
+| Product Owner | Escribe flujos, valida con química, protege MVP |
+| UX Designer | **Lidera** wireframes, prototipo y validación |
+| Stakeholder Manager | Entrevista a la química, coordina validaciones |
+| Compliance Analyst | Trabaja en paralelo fuera del prototipo: prepara consulta formal a COFEPRIS y mapeo normativo. No bloquea ni participa en el diseño visual. |
+| Frontend Lead | Apoya al UX Designer, no escribe código de producción |
+| Tech Lead | Apoya comprensión técnica de flujos, no escribe código |
+| QA Engineer | Valida usabilidad del prototipo |
+| DevOps | Inactivo |
+| Security Engineer | Inactivo (el spike de firma con `.key` reales ocurre en Fase 1) |
+| Data Engineer | Inactivo |
+
+## Comportamiento esperado por agente en esta fase
+
+- Ningún agente propone código de producción.
+- Ningún agente propone infraestructura AWS.
+- Todos los agentes priorizan validación con la química.
+- Cualquier propuesta técnica debe pasar primero por validación visual.
+- Si un agente detecta presión para saltar a código, escala al CTO.
+
+## Criterios de salida de la fase
+
+- La química farmacéutica aprueba el prototipo.
+- Los 3 portales están representados.
+- Los flujos críticos están validados (emisión, dispensación, auditoría).
+- Los bloqueos por fracción son claros para el usuario.
+- El equipo tiene claridad para arrancar Fase 1.
+
+## Al cambiar de fase
+
+Este archivo será reemplazado por el contexto de Fase 1 (POC local). 
+Los agentes activos, restricciones y entregables cambiarán. 
+No crear agentes nuevos por fase: los roles son estables, el contexto es temporal.
+
+## Reglas de transición
+
+1. No se avanza a Fase 1 sin aprobación explícita de la química.
+2. No se avanza a Fase 1 sin decisión documentada del CTO.
+3. Si la química pide cambios, se itera en Fase 0 sin saltar a código.
+4. Si el equipo presiona por avanzar, el CTO tiene la última palabra.

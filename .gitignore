@@ -1,0 +1,43 @@
+# Dependencias y builds
+node_modules/
+dist/
+build/
+.next/
+out/
+cdk.out/
+*.tsbuildinfo
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+
+# IDE y OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs y caché
+*.log
+npm-debug.log*
+.yarn/
+.pnpm-store/
+coverage/
+.nyc_output/
+
+# Python (utilidades locales)
+__pycache__/
+.venv/
+venv/
+
+# Terraform/CDK artefactos locales
+*.zip
+.aws-sam/
